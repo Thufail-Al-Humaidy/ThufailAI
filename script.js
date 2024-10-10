@@ -1,12 +1,13 @@
 var questionInput = document.getElementById("question");
-var answerDiv = document.getElementById("answer");
+var answerContentDiv = document.getElementById("answerContent");
 var apiUrl = "https://widipe.com/openai";
 var historyList = document.getElementById("history");
+var likeCount = 0; // Counter untuk likes
 
 async function sendBeg() {
     try {
         // Show loading animation
-        answerDiv.innerHTML = '<div class="loading"></div>';
+        answerContentDiv.innerHTML = '<div class="loading"></div>';
         
         const question = questionInput.value;
         const url = `${apiUrl}?text=${encodeURIComponent(question)}`;
@@ -17,16 +18,40 @@ async function sendBeg() {
         }
 
         const data = await response.json();
-        answerDiv.innerHTML = data.result;
+        
+        // Memformat jawaban dengan benar
+        const formattedAnswer = formatApiResult(data.result);
+        
+        answerContentDiv.innerHTML = formattedAnswer;
 
         // Add question and answer to history
         addToHistory(question, data.result);
         questionInput.value = ""; // Clear input field
     } catch (error) {
-        answerDiv.innerHTML = "Sorry, an error occurred: " + error.message;
+        answerContentDiv.innerHTML = "Sorry, an error occurred: " + error.message;
         console.log(error.message);
     }
 }
+
+// Fungsi untuk memformat hasil API agar lebih rapi
+function formatApiResult(result) {
+    // Menghapus tanda #, ##, ### yang menandakan heading
+    let formattedHtml = result
+        .replace(/### (.+)/g, '<h3>$1</h3>') // Mengubah heading 3
+        .replace(/## (.+)/g, '<h2>$1</h2>') // Mengubah heading 2
+        .replace(/# (.+)/g, '<h1>$1</h1>') // Mengubah heading 1
+        .replace(/```html([\s\S]+?)```/g, '<pre><code class="language-html">$1</code></pre>') // Mengubah blok kode HTML
+        .replace(/```css([\s\S]+?)```/g, '<pre><code class="language-css">$1</code></pre>') // Mengubah blok kode CSS
+        .replace(/```([\s\S]+?)```/g, '<pre><code>$1</code></pre>') // Mengubah blok kode umum
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') // Mengubah teks tebal
+        .replace(/- (.+)/g, '<li>$1</li>') // Mengubah list
+        .replace(/<\/li>(?!\s*<li>)/g, '</li></ul>') // Menutup list
+        .replace(/<li>/g, '<ul><li>') // Membuka list baru
+        .replace(/\n/g, '<br>'); // Mengganti line break dengan <br>
+
+    return `<div class="formatted-answer">${formattedHtml}</div>`;
+}
+
 
 function addToHistory(question, answer) {
     var listItem = document.createElement("li");
@@ -35,15 +60,23 @@ function addToHistory(question, answer) {
     historyList.appendChild(listItem);
 }
 
-function renderApiResult(result) {
-  // Pisahkan teks berdasarkan blok kode dan teks lainnya
-  let formattedHtml = result
-    .replace(/```html([^`]+)```/g, '<pre><code>$1</code></pre>') // Mengubah blok kode menjadi <pre><code>
-    .replace(/### (.+)/g, '<h3>$1</h3>') // Mengubah heading menjadi <h3>
-    .replace(/\n/g, '<br>') // Mengganti line break dengan <br>
-    .replace(/\- (.+)/g, '<li>$1</li>') // Mengganti bullet point dengan <li>
-    .replace(/(\n\n)/g, '</p><p>') // Memisahkan paragraf
-    .replace(/\*\*(.+?)\\/g, '<strong>$1</strong>');
-  // Tambahkan wrapper <p> di awal dan akhir
-  return `<p>${formattedHtml}</p>`;
+// Fungsi untuk tombol Like
+function likeAnswer() {
+    likeCount++;
+    alert(`Jawaban ini telah di-like ${likeCount} kali.`);
+}
+
+// Fungsi untuk menyalin jawaban ke clipboard
+function copyAnswer() {
+    const answerText = answerContentDiv.innerText;
+    navigator.clipboard.writeText(answerText).then(() => {
+        alert("Jawaban berhasil disalin!");
+    });
+}
+
+// Fungsi untuk membaca jawaban secara keras
+function readAloud() {
+    const speech = new SpeechSynthesisUtterance(answerContentDiv.innerText);
+    speech.lang = 'id-ID'; // Bisa disesuaikan dengan bahasa
+    window.speechSynthesis.speak(speech);
 }
