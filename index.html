@@ -1,173 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tanya EL</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-    rel="stylesheet"
-  />
-  <style>
-    body {
-      min-height: 100vh; /* Set minimum height to full viewport height */
-      display: flex;
-      flex-direction: column; /* Stack elements vertically */
-    }
-    .content {
-      flex: 1; /* Allow content to grow and fill space */
-    }
-    .loading {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #38a169; /* Green color for loading */
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tanya EL</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        min-height: 100vh; /* Set minimum height to full viewport height */
+        display: flex;
+        flex-direction: column; /* Stack elements vertically */
       }
-      100% {
-        transform: rotate(360deg);
+      .content {
+        flex: 1; /* Allow content to grow and fill space */
       }
-    }
+      .loading {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #38a169; /* Green color for loading */
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+      }
 
-    .answer-content {
-      max-height: 300px; /* Batas tinggi box jawaban */
-      overflow-y: auto; /* Aktifkan scroll jika jawabannya panjang */
-      word-break: break-word; /* Agar teks tidak meluber */
-      margin-bottom: 10px; /* Jarak antara jawaban dan tombol */
-    }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
 
-    .formatted-answer pre {
-      background-color: #333;
-      padding: 10px;
-      border-radius: 5px;
-      white-space: pre-wrap; /* Agar kode tidak meluber */
-    }
+      .answer-content {
+        max-height: 300px; /* Batas tinggi box jawaban */
+        overflow-y: auto; /* Aktifkan scroll jika jawabannya panjang */
+        word-break: break-word; /* Agar teks tidak meluber */
+        margin-bottom: 10px; /* Jarak antara jawaban dan tombol */
+      }
 
-    .formatted-answer code {
-      background-color: #444;
-      padding: 5px;
-      border-radius: 3px;
-    }
+      .formatted-answer pre {
+        background-color: #333;
+        padding: 10px;
+        border-radius: 5px;
+        white-space: pre-wrap; /* Agar kode tidak meluber */
+      }
 
-    .interaction-btns {
-      display: flex;
-      gap: 10px;
-      position: relative;
-    }
+      .formatted-answer code {
+        background-color: #444;
+        padding: 5px;
+        border-radius: 3px;
+      }
 
-    .interaction-btns button {
-      padding: 6px 12px;
-      border-radius: 4px;
-      background-color: #4caf50;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+      .interaction-btns {
+        display: flex;
+        gap: 10px;
+        position: relative;
+      }
 
-    .interaction-btns button:hover {
-      background-color: #45a049;
-    }
-  </style>
-</head>
-<body class="bg-gray-900 text-gray-100">
-  <div class="content">
-    <section class="p-5">
-      <div class="flex flex-1 rounded-lg shadow-lg overflow-hidden gap-2 h-screen">
-        <div class="bg-gray-800 p-6 md:w-2/3 w-full">
-          <h1 class="text-2xl font-bold text-center mb-5">
-            Tanya <span class="text-green-400">EL</span>
-          </h1>
-          <div class="form-group mb-4">
-            <label for="question" class="block mb-1">Berikan Pertanyaanmu</label>
-            <input
-              type="text"
-              id="question"
-              placeholder="Tanya aja, atau curhat..."
-              required
-              class="w-full p-3 border border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-green-300 bg-gray-700 text-gray-200"
-            />
-          </div>
-          <button
-            onclick="sendBeg()"
-            class="w-full p-3 bg-green-500 hover:bg-green-600 rounded-lg"
-          >
-            Kirim
-          </button>
+      .interaction-btns button {
+        padding: 6px 12px;
+        border-radius: 4px;
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
 
-          <div class="bg-gray-700 mt-4 p-4 rounded-lg h-full">
-            <!-- Answer content will be here -->
-            <div class="answer-content" id="answerContent">
-              <span class="text-gray-400">Jawaban akan muncul di sini...</span>
+      .interaction-btns button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    <div class="content">
+      <section class="p-5">
+        <div
+          class="flex flex-1 rounded-lg shadow-lg overflow-hidden gap-2 h-screen"
+        >
+          <div class="bg-gray-800 p-6 md:w-2/3 w-full">
+            <h1 class="text-2xl font-bold text-center mb-5">
+              Tanya <span class="text-green-400">EL</span>
+            </h1>
+            <div class="form-group mb-4">
+              <label for="question" class="block mb-1"
+                >Berikan Pertanyaanmu</label
+              >
+              <input
+                type="text"
+                id="question"
+                placeholder="Tanya aja, atau curhat..."
+                required
+                class="w-full p-3 border border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-green-300 bg-gray-700 text-gray-200"
+              />
             </div>
+            <button
+              onclick="sendBeg()"
+              class="w-full p-3 bg-green-500 hover:bg-green-600 rounded-lg"
+            >
+              Kirim
+            </button>
 
-            <!-- Interaction buttons -->
-            <div class="interaction-btns">
-              <button id="likeBtn" onclick="likeAnswer()">👍 Like</button>
-              <button id="copyBtn" onclick="copyAnswer()">📋 Salin</button>
-              <button id="readAloudBtn" onclick="readAloud()">
-                🔊 Baca Keras
-              </button>
+            <div class="bg-gray-700 mt-4 p-4 rounded-lg h-full">
+              <!-- Answer content will be here -->
+              <div class="answer-content" id="answerContent">
+                <span class="text-gray-400"
+                  >Jawaban akan muncul di sini...</span
+                >
+              </div>
+
+              <!-- Interaction buttons -->
+              <div class="interaction-btns">
+                <button id="likeBtn" onclick="likeAnswer()">👍 Like</button>
+                <button id="copyBtn" onclick="copyAnswer()">📋 Salin</button>
+                <button id="readAloudBtn" onclick="readAloud()">
+                  🔊 Baca Keras
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="bg-gray-700 p-4 w-1/3 md:flex flex-col hidden">
-          <h2 class="text-xl font-semibold mb-2">History:</h2>
-          <ul
-            id="history"
-            class="bg-gray-600 p-3 rounded-lg h-full overflow-y-auto"
-          >
-            <!-- History will be appended here -->
-          </ul>
+          <div class="bg-gray-700 p-4 w-1/3 md:flex flex-col hidden">
+            <h2 class="text-xl font-semibold mb-2">History:</h2>
+            <ul
+              id="history"
+              class="bg-gray-600 p-3 rounded-lg h-full overflow-y-auto"
+            >
+              <!-- History will be appended here -->
+            </ul>
+          </div>
         </div>
-      </div>
-    </section>
-  </div>
-
- <footer class="bg-gray-800 text-gray-300 py-6">
-  <div class="container mx-auto px-4">
-    <div class="flex flex-col md:flex-row justify-between items-center">
-      <div class="mb-4 md:mb-0">
-        <h2 class="text-lg font-bold">Tentang Kami</h2>
-        <p class="text-sm">
-          Kami adalah tim yang berkomitmen untuk memberikan solusi AI
-          terbaik untuk kebutuhan Anda.
-        </p>
-      </div>
-      <div class="mb-4 md:mb-0">
-        <h2 class="text-lg font-bold">Ikuti Kami</h2>
-        <div class="flex space-x-4">
-          <!-- <a href="https://www.facebook.com" class="hover:text-green-400">Facebook</a> -->
-          <a href="https://www.instagram.com/elfaqot.05" class="hover:text-green-400">Instagram</a>
-          <a href="https://www.youtube.com/channel/ThufailAlHumaidy" class="hover:text-green-400">YouTube</a>
-          <a href="https://www.linkedin.com/in/thufail-al-humaidy" class="hover:text-green-400">LinkedIn</a>
-        </div>
-      </div>
-      <div>
-        <h2 class="text-lg font-bold">Kontak Kami</h2>
-        <p class="text-sm">
-          Email:
-          <a href="mailto:justtholib05@gmail.com" class="hover:text-green-400">justtholib05@gmail.com</a>
-        </p>
-        <p class="text-sm">
-          Telepon:
-          <a href="https://wa.me/6287755229065" class="hover:text-green-400">+62 877 5522 9065</a>
-        </p>
-      </div>
+      </section>
     </div>
-    <div class="border-t border-gray-600 mt-4 pt-4 text-center">
-      <p class="text-sm">&copy; 2024 Thufail AL Humaidy. Semua Hak Dilindungi.</p>
-    </div>
-  </div>
-</footer>
 
+    <footer class="bg-gray-800 text-gray-300 py-6">
+      <div class="container mx-auto px-4">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center"
+        >
+          <div class="mb-4 md:mb-0">
+            <h2 class="text-lg font-bold">Tentang Kami</h2>
+            <p class="text-sm">
+              Kami adalah tim yang berkomitmen untuk memberikan solusi AI
+              terbaik untuk kebutuhan Anda.
+            </p>
+          </div>
+          <div class="mb-4 md:mb-0">
+            <h2 class="text-lg font-bold">Ikuti Kami</h2>
+            <div class="flex flex-wrap space-x-4">
+              <!-- <a href="https://www.facebook.com" class="hover:text-green-400"
+                >Facebook</a
+              > -->
+              <a
+                href="https://www.instagram.com/elfaqot.05"
+                class="hover:text-green-400"
+                >Instagram</a
+              >
+              <a
+                href="https://www.youtube.com/channel/ThufailAlHumaidy"
+                class="hover:text-green-400"
+                >YouTube</a
+              >
+              <a
+                href="https://www.linkedin.com/in/thufail-al-humaidy"
+                class="hover:text-green-400"
+                >LinkedIn</a
+              >
+            </div>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold">Kontak Kami</h2>
+            <p class="text-sm">
+              Email:
+              <a
+                href="mailto:justtholib05@gmail.com"
+                class="hover:text-green-400"
+                >justtholib05@gmail.com</a
+              >
+            </p>
+            <p class="text-sm">
+              WhatsApp:
+              <a href="https://wa.me/6287755229065" class="hover:text-green-400"
+                >+62 877 5522 9065</a
+              >
+            </p>
+          </div>
+        </div>
+        <div class="border-t border-gray-600 mt-4 pt-4 text-center">
+          <p class="text-sm">
+            &copy; 2024 Thufail AL Humaidy. Semua Hak Dilindungi.
+          </p>
+        </div>
+      </div>
+    </footer>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
